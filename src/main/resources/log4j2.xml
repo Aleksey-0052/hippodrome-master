@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR">
+<!--<Configuration xmlns="https://logging.apache.org/xml/ns"-->
+<!--               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--               xsi:schemaLocation="-->
+<!--                   https://logging.apache.org/xml/ns-->
+<!--                   https://logging.apache.org/xml/ns/log4j-config-2.xsd">-->
+
+    <Properties>
+        <Property name="LOG"
+                  value="%-5p %d{yyyy-MM-dd HH:mm:ss, SSS} %c{1.}.%M (%F:%L): %msg%n"/>
+        <Property name="LOG_COLOR"
+                  value="%highlight{${sys:LOG}}{FATAL=red blink, ERROR=red bold, WARN=yellow, INFO=green,
+                  DEBUG=cyan, TRACE=magenta}"/>
+    </Properties>
+
+    <Appenders>
+        <Console name="ColorConsole" target="SYSTEM_OUT">
+<!--            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>-->
+            <PatternLayout pattern="${sys:LOG_COLOR}"/>
+        </Console>
+
+        <RollingFile name="RollingFile" fileName="logs/hippodrome.log"
+                     filePattern="logs/hippodrome.%d{yyyy-MM-dd}.log">
+                             ignoreExceptions="false">
+            <PatternLayout pattern="%d %-5p %c: %m%n"/>
+            <TimeBasedTriggeringPolicy />
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs" maxDepth="2">
+                    <IfFileName glob="hippodrome.*.log" />
+                    <IfLastModified age="7d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="ColorConsole" level="ALL"/>
+            <AppenderRef ref="RollingFile" level="DEBUG"/>
+        </Root>
+    </Loggers>
+</Configuration>
